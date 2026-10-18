@@ -8,13 +8,13 @@ class Linajes{
 
     method agregarTecnologiaActiva(tecnologia){if (tecnologia.estadoActivo()) tecnologiasActivas.add(tecnologia)}
     method energiaTotal() = energia
-    method sumarEnergiaTotal() { energia = nivelDeEnergiaBase + tecnologiasActivas.sum({t => t.valorEnergetico()})}
+    method sumarEnergiaTotal() {energia = nivelDeEnergiaBase + tecnologiasActivas.sum({t => t.valorEnergetico()})}
     
 }
 
 class Luminico inherits Linajes{
     var nivelDeRadiacionCapturada = 0
-    const  cristalesSolares = ["oxidiana","piedra filosofal", "mytril" ]
+    const  cristalesSolares = ["zafiro","oxidiana", "mithril" ]
     var cristalAmplificador = "oxidiana"
  
     method agregarCristalSolar(nuevoCristal){ cristalesSolares.add(nuevoCristal)}
@@ -23,9 +23,10 @@ class Luminico inherits Linajes{
     method cristalAmplificador() = cristalAmplificador
     method cambiarNivelDeRadiacion(valorCapturado){ nivelDeRadiacionCapturada = valorCapturado }
     method nivelDeRadiacion() = nivelDeRadiacionCapturada
-    method sumarSitieneMenosRadiacionDe5000() = if  ( self.nivelDeRadiacion() <= 5000) energia = energia + (self.energiaTotal() * 0.10) else energia + 0 
-    override method sumarEnergiaTotal() {energia = nivelDeEnergiaBase  + self.sumarSitieneMenosRadiacionDe5000() }
-}// tecnologiasActivas.sum({t => t.valorEnergetico()})
+    method sumarSitieneMenosRadiacionDe5000() = if  ( self.nivelDeRadiacion() <= 5000) self.energiaTotal() * 0.10 else 0 
+    override method sumarEnergiaTotal() {super()
+    energia += self.sumarSitieneMenosRadiacionDe5000()}
+}
 class Sintetico inherits Linajes{
     var nivelDeProcesamientoCentral = 0
     var estaCertificado = false
@@ -37,7 +38,8 @@ class Sintetico inherits Linajes{
     method nivelDeProcesamientoCentral() = nivelDeProcesamientoCentral
     method cambiarModulosActivos(modulos){ cantModulosActivos = modulos}
     method cantModulosActivos() = cantModulosActivos
-    //override method sumarEnergiaTotal(){super() if (self.cantModulosActivos() > 5) energiaTotal -= (self.energiaTotal() * 0.20)  }
+    method sumarSiTieneMenosde5() = if (self.cantModulosActivos() > 5) self.energiaTotal() * 0.20 else 0 
+    override method sumarEnergiaTotal(){super() energia -= self.sumarSiTieneMenosde5()}
 }
 class Eterico inherits Linajes{
     var nivelDeFluctuacionDimensional = 0
@@ -79,9 +81,11 @@ object otroRol{
 class TecnologiasComplementarias{
     var property nombre = ""
     var property valorEnergetico = 0
-    var estado = true
+    var property estado = false
 
+    method desactivado() {estado = false}
+    method activado() {estado = true}
     method cambiarEstado(){ estado = !estado}
-    method estadoActivo() = estado
+    method estado() = estado
 
 }
