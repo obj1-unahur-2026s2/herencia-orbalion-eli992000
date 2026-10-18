@@ -1,0 +1,10 @@
+import orbalion.*
+test " la FOZ solo admite entrenadores homologados"{
+    const entrenadorHomologado = new Entrenadores()
+    assert.throwsException({entrenadorHomologado.cambiarRol(otroRol)})
+}
+test "Un equipo lumínico con radiación > 5000 y sin tecnologías activas su energía total es su energía base."{
+     const luminicos = new Luminico(nombre = "stark", nivelDeEnergiaBase = 100, entrenador = new Entrenadores())
+    luminicos.cambiarNivelDeRadiacion(6000)
+    assert.equals(100, luminicos.energiaTotal())
+}
