@@ -50,36 +50,36 @@ class Eterico inherits Equipos{
     method cambiarCantidadDePortalesAbiertos(cantidad){ cantPortalesEnergeticosAbiertos = cantidad}
     method cantidadDePortalesAbiertos() = cantPortalesEnergeticosAbiertos
 }
-class Entrenadores {
+class Entrenador {
     var property cantDeCiclosLunares = 0
     var property estaEnSintonia = true
-    var property esEliteGalactio = false
     var nivelDePresicionEstrategica = 0
     var rolHomologado = guiaMental
     
     method cambiarNivelDePresicion(nivel){ nivelDePresicionEstrategica = nivel}
-    method niveldeDePresicionEstrategica() = nivelDePresicionEstrategica.min(100)
+    method nivelDePresicionEstrategica() = nivelDePresicionEstrategica
     method cambiarRol(unRol){if (unRol.estaHomologado()) rolHomologado = unRol else self.error("Rol no homologado por la FOZ") }
     method rol() = rolHomologado
-    method esEliteGalactico(unRol) = cantDeCiclosLunares > 10 && unRol.cumple()
+    // method cumple(entrenador) = rol().cumple(entrenador)
+    method esEliteGalactico(unRol) = cantDeCiclosLunares > 10 and unRol.cumple(self)
 }
 //Cumple según su rol:
 //Estratega Cuántico: precisión > 80.
 //Arquitecto de Energía: debe estar en sintonía con el equipo.
 //Guía Mental: no tiene condiciones adicionales.
-class Rol inherits Entrenadores{
+class Rol {
     var property estaHomologado = true
     
 
 }
-object estrategaCuantico inherits Rol{
-    method cumple() = self.niveldeDePresicionEstrategica() > 80
+object estrategaCuantico{
+    method cumple(entrenador) = entrenador.nivelDePresicionEstrategica() > 80
 }
-object arquitectoDeEnergia inherits Rol{
-    method cumple() = self.estaEnSintonia()
+object arquitectoDeEnergia{
+    method cumple(entrenador) = entrenador.estaEnSintonia()
 }
-object guiaMental inherits Rol{
-    method cumple(){}
+object guiaMental{
+    method cumple(entrenador) = entrenador.cantDeCiclosLunares() >= 15
 }
 //Ejemplos de tecnologías: núcleos gravitacionales, interfaces de proyección mental, cámaras de fusión energética.
 class TecnologiasComplementarias{

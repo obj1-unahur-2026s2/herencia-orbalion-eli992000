@@ -2,32 +2,48 @@ import orbalion.*
 describe "test orbalion"{
     //tp integrador
 test " la FOZ solo admite entrenadores homologados"{
-    const entrenadorHomologado = new Entrenadores()
+    const entrenadorHomologado = new Entrenador()
     assert.throwsException({entrenadorHomologado.cambiarRol(new Rol (estaHomologado = false))})
 }
 test "Un equipo lumínico con radiación > 5000 y sin tecnologías activas su energía total es su energía base."{
-     const luminicos = new Luminico(nombre = "stark", nivelDeEnergiaBase = 100, entrenador = new Entrenadores())
+     const luminicos = new Luminico(nombre = "stark", nivelDeEnergiaBase = 100, entrenador = new Entrenador())
     luminicos.cambiarNivelDeRadiacion(6000)
     luminicos.sumarEnergiaTotal()
     assert.equals(100, luminicos.energiaTotal())
 }
 test "Un equipo lumínico con radiación < 5000 obtiene el bono del 10%."{
-  const luminicos = new Luminico(nombre = "stark", nivelDeEnergiaBase = 100, entrenador = new Entrenadores())
+  const luminicos = new Luminico(nombre = "stark", nivelDeEnergiaBase = 100, entrenador = new Entrenador())
     luminicos.sumarEnergiaTotal()
     assert.equals(110, luminicos.energiaTotal())
 }
 test "Un equipo sintético con 6 módulos aplica correctamente la penalización del 20%."{
-    const sinteticos = new Sintetico (nombre = "pandoras", nivelDeEnergiaBase = 200, entrenador = new Entrenadores())
+    const sinteticos = new Sintetico (nombre = "pandoras", nivelDeEnergiaBase = 200, entrenador = new Entrenador())
     sinteticos.cambiarModulosActivos(6)
     sinteticos.sumarEnergiaTotal()
     assert.equals(160, sinteticos.energiaTotal())
 }
 test "Un equipo sintético con 4 módulos y 2 tecnologías complementarias suma correctamente los valores energéticos."{
-    const sinteticos = new Sintetico (nombre = "pandoras", nivelDeEnergiaBase = 200, entrenador = new Entrenadores())
+    const sinteticos = new Sintetico (nombre = "pandoras", nivelDeEnergiaBase = 200, entrenador = new Entrenador())
     sinteticos.agregarTecnologiaActiva(new TecnologiasComplementarias(nombre = "núcleos gravitacionales",valorEnergetico = 5, activa = true))
     sinteticos.agregarTecnologiaActiva(new TecnologiasComplementarias(nombre = "interfaces de proyección mental",valorEnergetico = 5, activa = true))
     sinteticos.sumarEnergiaTotal()
     assert.equals(210,sinteticos.energiaTotal())
 }
-
+test "Estratega cuántico con 12 ciclos y precisión 90 es de élite galáctica."{
+   /* var property cantDeCiclosLunares = 0
+    var property estaEnSintonia = true
+    var property esEliteGalactio = false
+    var nivelDePresicionEstrategica = 0
+    var rolHomologado = guiaMental*/
+    const obiWan = new Entrenador(cantDeCiclosLunares = 12, nivelDePresicionEstrategica = 90, rolHomologado = estrategaCuantico )
+    assert.that(obiWan.esEliteGalactico(estrategaCuantico))
+}
+test "Arquitecto de energía con 11 ciclos pero sin sintonía,no es de élite."{
+    const kyloRen = new Entrenador(cantDeCiclosLunares = 11, estaEnSintonia = false, rolHomologado = arquitectoDeEnergia)
+    assert.notThat(kyloRen.esEliteGalactico(arquitectoDeEnergia))
+}
+test"Guía mental con 15 ciclos, siempre es de élite."{
+    const rei = new Entrenador(cantDeCiclosLunares = 15, rolHomologado = guiaMental)
+    assert.that(rei.esEliteGalactico(guiaMental))
+}
 }
