@@ -1,20 +1,19 @@
 class Equipos{
     const property nombre
     const property tecComplementaria = [] 
-    var property nivelDeEnergiaBase 
+    var property nivelDeEnergiaBase = 0 
     var property entrenador 
     var energia = 0
-    const property tecnologiasActivas = []
 
-    method agregarTecnologiaActiva(tecnologia){if (tecnologia.activa()) tecnologiasActivas.add(tecnologia)}
+    method tecnologiasActivas() = tecComplementaria.filter({t => t.activa()})
     method energiaTotal() = energia
-    method sumarEnergiaTotal() {energia = nivelDeEnergiaBase + tecnologiasActivas.sum({t => t.valorEnergetico()})}
-    
+    method sumarEnergiaTotal() {energia = nivelDeEnergiaBase + self.tecnologiasActivas().sum({t => t.valorEnergetico()})}
+    method esDePrestigioUniversal(){}
 }
 
 class Luminico inherits Equipos{
     var nivelDeRadiacionCapturada = 0
-    const  cristalesSolares = ["zafiro","oxidiana", "mithril" ]
+    const property cristalesSolares = ["zafiro","oxidiana", "mithril" ]
     var cristalAmplificador = "oxidiana"
  
     method agregarCristalSolar(nuevoCristal){ cristalesSolares.add(nuevoCristal)}
@@ -26,6 +25,7 @@ class Luminico inherits Equipos{
     method sumarSitieneMenosRadiacionDe5000() = if  ( self.nivelDeRadiacion() <= 5000) self.energiaTotal() * 0.10 else 0 
     override method sumarEnergiaTotal() {super()
     energia += self.sumarSitieneMenosRadiacionDe5000()}
+    override method esDePrestigioUniversal() = self.cristalesSolares().size() >= 3 && self.entrenador().esEliteGalactico() && self.tecComplementaria().any({t=>t.activa()})
 }
 class Sintetico inherits Equipos{
     var nivelDeProcesamientoCentral = 0
@@ -40,6 +40,7 @@ class Sintetico inherits Equipos{
     method cantModulosActivos() = cantModulosActivos
     method sumarSiTieneMenosde5() = if (self.cantModulosActivos() > 5) self.energiaTotal() * 0.20 else 0 
     override method sumarEnergiaTotal(){super() energia -= self.sumarSiTieneMenosde5()}
+    override method esDePrestigioUniversal() = self.estaCertificado() && self.cantModulosActivos() > 3 && self.tecComplementaria().all({t=>t.activa()})
 }
 class Eterico inherits Equipos{
     var nivelDeFluctuacionDimensional = 0
@@ -55,31 +56,29 @@ class Entrenador {
     var property estaEnSintonia = true
     var nivelDePresicionEstrategica = 0
     var rolHomologado = guiaMental
-    
+      
     method cambiarNivelDePresicion(nivel){ nivelDePresicionEstrategica = nivel}
     method nivelDePresicionEstrategica() = nivelDePresicionEstrategica
     method cambiarRol(unRol){if (unRol.estaHomologado()) rolHomologado = unRol else self.error("Rol no homologado por la FOZ") }
     method rol() = rolHomologado
-    // method cumple(entrenador) = rol().cumple(entrenador)
-    method esEliteGalactico(unRol) = cantDeCiclosLunares > 10 and unRol.cumple(self)
+    method esEliteGalactico() = cantDeCiclosLunares > 10 and self.rol().cumple(self)
 }
-//Cumple según su rol:
-//Estratega Cuántico: precisión > 80.
-//Arquitecto de Energía: debe estar en sintonía con el equipo.
-//Guía Mental: no tiene condiciones adicionales.
 class Rol {
     var property estaHomologado = true
-    
 
+    method cumple(entrenador){}
 }
-object estrategaCuantico{
-    method cumple(entrenador) = entrenador.nivelDePresicionEstrategica() > 80
+object estrategaCuantico inherits Rol{
+   
+   override method cumple(entrenador) = entrenador.nivelDePresicionEstrategica() > 80
 }
-object arquitectoDeEnergia{
-    method cumple(entrenador) = entrenador.estaEnSintonia()
+object arquitectoDeEnergia inherits Rol{
+    
+    override method cumple(entrenador) = entrenador.estaEnSintonia()
 }
-object guiaMental{
-    method cumple(entrenador) = entrenador.cantDeCiclosLunares() >= 15
+object guiaMental inherits Rol{
+    
+    override method cumple(entrenador) = true
 }
 //Ejemplos de tecnologías: núcleos gravitacionales, interfaces de proyección mental, cámaras de fusión energética.
 class TecnologiasComplementarias{

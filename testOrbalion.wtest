@@ -24,26 +24,34 @@ test "Un equipo sintético con 6 módulos aplica correctamente la penalización 
 }
 test "Un equipo sintético con 4 módulos y 2 tecnologías complementarias suma correctamente los valores energéticos."{
     const sinteticos = new Sintetico (nombre = "pandoras", nivelDeEnergiaBase = 200, entrenador = new Entrenador())
-    sinteticos.agregarTecnologiaActiva(new TecnologiasComplementarias(nombre = "núcleos gravitacionales",valorEnergetico = 5, activa = true))
-    sinteticos.agregarTecnologiaActiva(new TecnologiasComplementarias(nombre = "interfaces de proyección mental",valorEnergetico = 5, activa = true))
+    sinteticos.tecComplementaria().add(new TecnologiasComplementarias(nombre = "núcleos gravitacionales",valorEnergetico = 5, activa = true))
+    sinteticos.tecComplementaria().add(new TecnologiasComplementarias(nombre = "interfaces de proyección mental",valorEnergetico = 5, activa = true))
     sinteticos.sumarEnergiaTotal()
     assert.equals(210,sinteticos.energiaTotal())
 }
 test "Estratega cuántico con 12 ciclos y precisión 90 es de élite galáctica."{
-   /* var property cantDeCiclosLunares = 0
-    var property estaEnSintonia = true
-    var property esEliteGalactio = false
-    var nivelDePresicionEstrategica = 0
-    var rolHomologado = guiaMental*/
     const obiWan = new Entrenador(cantDeCiclosLunares = 12, nivelDePresicionEstrategica = 90, rolHomologado = estrategaCuantico )
-    assert.that(obiWan.esEliteGalactico(estrategaCuantico))
+    assert.that(obiWan.esEliteGalactico())
 }
 test "Arquitecto de energía con 11 ciclos pero sin sintonía,no es de élite."{
     const kyloRen = new Entrenador(cantDeCiclosLunares = 11, estaEnSintonia = false, rolHomologado = arquitectoDeEnergia)
-    assert.notThat(kyloRen.esEliteGalactico(arquitectoDeEnergia))
+    assert.notThat(kyloRen.esEliteGalactico())
 }
 test"Guía mental con 15 ciclos, siempre es de élite."{
     const rei = new Entrenador(cantDeCiclosLunares = 15, rolHomologado = guiaMental)
-    assert.that(rei.esEliteGalactico(guiaMental))
+    assert.that(rei.esEliteGalactico())
+}
+test "Equipo lumínico con 3 cristales, entrenador de élite y una tecnología activa, es de prestigio universal."{
+ const luminicos = new Luminico(nombre="Starligth", entrenador= new Entrenador(cantDeCiclosLunares = 12, nivelDePresicionEstrategica = 90, rolHomologado = estrategaCuantico), nivelDeEnergiaBase= 10)
+ luminicos.tecComplementaria().add(new TecnologiasComplementarias(nombre = "núcleos gravitacionales",valorEnergetico = 5, activa = true))
+ assert.that(luminicos.esDePrestigioUniversal())
+}
+test"Equipo sintético certificado con 4 módulos y todas las tecnologías activas, es de prestigio."{
+    const sinteticos = new Sintetico(nombre="Loopers", entrenador= new Entrenador())
+    sinteticos.certificarUnidadEstable()
+    sinteticos.cambiarModulosActivos(4)
+    sinteticos.tecComplementaria().add(new TecnologiasComplementarias(nombre= "", valorEnergetico = 10, activa= true))
+    sinteticos.tecComplementaria().add(new TecnologiasComplementarias(nombre= "interfaces de proyección mental",valorEnergetico= 5, activa= true))
+    assert.that(sinteticos.esDePrestigioUniversal())
 }
 }
